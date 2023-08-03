@@ -7,6 +7,7 @@ const pool = new Pool({
 });
 
 const getUsers = (request, response) => {
+    console.log('---- Request received for all user list.');
     pool.query('SELECT * FROM users ORDER BY user_id ASC', (error, results) => {
         if (error) {
             throw error
