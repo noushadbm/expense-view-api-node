@@ -6,14 +6,34 @@ const pool = new Pool({
     },
 });
 
-const getUsers = (request, response) => {
-    console.log('---- Request received for all user list.');
-    pool.query('SELECT * FROM users ORDER BY user_id ASC', (error, results) => {
-        if (error) {
-            throw error
-        }
-        response.status(200).json(results.rows)
-    })
+const createUser = (name, password, email) => {
+    console.log('Create user request received for username:', name);
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO users (user_name, user_password, email) VALUES ($1, $2, $3) RETURNING *', [name, password, email], (error, results) => {
+            if (error) {
+                //throw error
+                reject(error);
+            } else {
+                //response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
+                resolve(results.rows[0].user_id);
+            } 
+        })
+    });
+}
+
+const getUsers = () => {
+    console.log('Request received for all user list.');
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM users ORDER BY user_id ASC', (error, results) => {
+            if (error) {
+                //throw error
+                reject(error);
+            } else {
+                //response.status(200).json(results.rows)
+                resolve(results.rows);
+            }
+        })
+    });
 }
 
 const getUserById = (request, response) => {
@@ -27,16 +47,7 @@ const getUserById = (request, response) => {
     })
 }
 
-const createUser = (request, response) => {
-    const { name, password, email } = request.body
 
-    pool.query('INSERT INTO users (user_name, user_password, email) VALUES ($1, $2, $3) RETURNING *', [name, password, email], (error, results) => {
-        if (error) {
-            throw error
-        }
-        response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
-    })
-}
 
 const deleteUser = (request, response) => {
     const id = parseInt(request.params.id)

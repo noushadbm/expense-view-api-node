@@ -1,6 +1,7 @@
-const express = require('express')
-const db = require('./queries')
-const bodyParser = require('body-parser')
+const express = require('express');
+const db = require('./queries');
+const service = require('./service');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -15,9 +16,9 @@ app.get('/', (request, response) => {
     response.json({ info: 'Node.js, Express, and Postgres API' })
 })
 
-app.get('/users', db.getUsers)
+app.get('/users', service.getAllUsers)
 app.get('/users/:id', db.getUserById)
-app.post('/users', db.createUser)
+app.post('/users', service.register)
 app.put('/users/:id', db.updateUser)
 app.delete('/users/:id', db.deleteUser)
 
