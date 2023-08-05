@@ -20,6 +20,7 @@ app.get('/users/:id', service.getUserById);
 app.post('/users', service.register);
 app.put('/users/:id', service.updateUser);
 app.delete('/users/:id', service.deleteUser);
+app.get('/clearRecords', service.removeOldNonReadyRecords);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);

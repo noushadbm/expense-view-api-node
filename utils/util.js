@@ -8,14 +8,14 @@ const successResponse = (data, response) => {
     response.status(200).send(respBody);
 }
 
-const failureResponse = (message, response) => {
+const failureResponse = (errMessage, response) => {
     let respBody = {};
     respBody.statusCode = 100;
     respBody.statusMsg = 'FAILURE';
-    respBody.failureMessage = message;
+    respBody.error = errMessage;
 
-    console.log(`Returning failure response: ${respBody}`);
-    response.status(500).send(respBody);
+    console.log(`Returning failure response: ${JSON.stringify(respBody)}`);
+    response.status(200).send(respBody);
 }
 
 module.exports = {

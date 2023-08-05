@@ -65,6 +65,22 @@ const deleteUser = (id) => {
     });
 }
 
+const deleteNonReadyRecords = () => {
+    console.log('Deleting older non-ready user records');
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM users WHERE create_time < NOW() - INTERVAL '1 day' and status = 'INIT' ",
+            [],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve('DONE');
+                }
+            }
+        );
+    });
+}
+
 const updateUser = (id, name, email) => {
     console.log('Request received for getting user:', id);
 
@@ -80,7 +96,7 @@ const updateUser = (id, name, email) => {
                     resolve(id);
                 }
             }
-        )
+        );
     });
 }
 
@@ -90,4 +106,5 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
+    deleteNonReadyRecords,
 }
