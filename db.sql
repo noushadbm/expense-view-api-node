@@ -1,0 +1,17 @@
+create table users(
+    user_id serial PRIMARY KEY,
+    user_name varchar(50) not null,
+    user_password varchar(100) not null,
+    user_role varchar(25),
+    email varchar(50),
+    status varchar(15) DEFAULT 'INIT',
+    create_time timestamp DEFAULT CURRENT_TIMESTAMP,
+    update_time timestamp
+);
+
+create table auth(
+    user_id integer REFERENCES users(user_id) ON DELETE CASCADE,
+    verification_code varchar(50),
+    auth_token varchar(100),
+    token_expiry_time timestamp
+);

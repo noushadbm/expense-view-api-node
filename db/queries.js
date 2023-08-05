@@ -17,7 +17,20 @@ const createUser = (name, password, email) => {
                 //response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
                 resolve(results.rows[0].user_id);
             }
-        })
+        });
+    });
+}
+
+const createAuthRecord = (id, verificationCode) => {
+    console.log(`Creating auth record for user id: ${id}, verification code: ${verificationCode}`);
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO auth (user_id, verification_code) VALUES ($1, $2)', [id, verificationCode], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve('DONE');
+            }
+        });
     });
 }
 
@@ -54,7 +67,7 @@ const getUserById = (id) => {
 const deleteUser = (id) => {
     console.log('Request received for deleting user:', id);
     return new Promise((resolve, reject) => {
-        pool.query('DELETE FROM users WHERE user_id = $1', [id], (error, results) => {
+        pool.query('DELETE FROM users USING auth WHERE users.user_id = auth.user_id and users.user_id = $1', [id], (error, results) => {
             if (error) {
                 reject(error);
             } else {
@@ -68,7 +81,7 @@ const deleteUser = (id) => {
 const deleteNonReadyRecords = () => {
     console.log('Deleting older non-ready user records');
     return new Promise((resolve, reject) => {
-        pool.query("DELETE FROM users WHERE create_time < NOW() - INTERVAL '1 day' and status = 'INIT' ",
+        pool.query("DELETE FROM users USING auth WHERE users.user_id = auth.user_id and create_time < NOW() - INTERVAL '1 day' and status = 'INIT' ",
             [],
             (error, results) => {
                 if (error) {
@@ -107,4 +120,5 @@ module.exports = {
     updateUser,
     deleteUser,
     deleteNonReadyRecords,
+    createAuthRecord,
 }

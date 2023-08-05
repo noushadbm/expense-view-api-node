@@ -5,9 +5,15 @@ const err = require('../common/constants');
 const register = (request, response) => {
     const { name, password, email } = request.body;
     db.createUser(name, password, email).then(userId => {
-        //response.status(201).send(`User added with ID: ${userId}`)
         console.log('User created with id:', userId);
-        util.successResponse({ id: userId }, response);
+        let verificationCode = util.getRandomNumber();
+        db.createAuthRecord(userId, verificationCode).then((status) => {
+            util.successResponse({ id: userId, verificationCode }, response);
+        }).catch((error) => {
+            console.log(`Error while getting auth record for user id: ${userId},`, error);
+            util.failureResponse(err.ERR_008, response);
+        });
+
     }).catch(error => {
         console.log('Error while creating user. ', error);
         util.failureResponse(err.ERR_001, response);

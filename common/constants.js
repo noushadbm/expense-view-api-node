@@ -6,4 +6,5 @@ module.exports = Object.freeze({
     ERR_005: { errorCode: 'E005', errorMessage: 'Error updating user details.'},
     ERR_006: { errorCode: 'E006', errorMessage: 'Error deleting user.'},
     ERR_007: { errorCode: 'E007', errorMessage: 'Error deleting old non ready user records.'},
+    ERR_008: { errorCode: 'E008', errorMessage: 'Error while creating auth record.'},
 });

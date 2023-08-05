@@ -18,7 +18,14 @@ const failureResponse = (errMessage, response) => {
     response.status(200).send(respBody);
 }
 
+const getRandomNumber = () => {
+    let min = 100;
+    let max = 2147483647;
+    return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
 module.exports = {
     successResponse,
     failureResponse,
+    getRandomNumber,
 }
