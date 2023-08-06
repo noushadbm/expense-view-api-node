@@ -1,4 +1,8 @@
 const express = require('express');
+const dotenv = require('dotenv');
+// To read environment variables from .env file.
+dotenv.config();
+
 const service = require('./services/service');
 const bodyParser = require('body-parser');
 const app = express();

@@ -1,6 +1,8 @@
 const Pool = require('pg').Pool
+const dbUserName = process.env.DB_USER_NAME || '*****';
+const dbPassword = process.env.DB_PASSWORD || '******';
 const pool = new Pool({
-    connectionString: 'postgres://noushadbm:3cQw2nGUsxNB@ep-holy-mouse-66720231.ap-southeast-1.aws.neon.tech/neondb?options=endpoint%3Dep-holy-mouse-66720231',
+    connectionString: `postgres://${dbUserName}:${dbPassword}@ep-holy-mouse-66720231.ap-southeast-1.aws.neon.tech/neondb?options=endpoint%3Dep-holy-mouse-66720231`,
     ssl: {
         rejectUnauthorized: false,
     },
