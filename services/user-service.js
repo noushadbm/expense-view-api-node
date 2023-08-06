@@ -8,7 +8,7 @@ const register = (request, response) => {
         console.log('User created with id:', userId);
         let verificationCode = util.getRandomNumber();
         db.createAuthRecord(userId, verificationCode).then((status) => {
-            util.successResponse({ id: userId, verificationCode }, response);
+            util.successResponse({ user_id: userId, verificationCode }, response);
         }).catch((error) => {
             console.log(`Error while getting auth record for user id: ${userId},`, error);
             util.failureResponse(err.ERR_008, response);

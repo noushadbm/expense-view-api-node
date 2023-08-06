@@ -115,6 +115,19 @@ const updateUser = (id, name, email) => {
     });
 }
 
+const createMetaData = (userId) => {
+    console.log('Creating meta-data entry for user:', userId);
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO metadata (user_id) VALUES ($1)  RETURNING *', [userId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results.rows[0].id);
+            }
+        });
+    });
+}
+
 module.exports = {
     getUsers,
     getUserById,
@@ -123,4 +136,5 @@ module.exports = {
     deleteUser,
     deleteNonReadyRecords,
     createAuthRecord,
+    createMetaData
 }

@@ -1,10 +1,13 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
 // To read environment variables from .env file.
 dotenv.config();
 
-const service = require('./services/service');
-const bodyParser = require('body-parser');
+// Services
+const userService = require('./services/user-service');
+const expenseService = require('./services/expense-service');
+
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -16,15 +19,23 @@ app.use(
 );
 
 app.get('/', (request, response) => {
-    response.json({ info: 'Node.js, Express, and Postgres API' });
+    response.json({ info: 'Hello from expense-view API' });
 });
 
-app.get('/api/v1/users', service.getAllUsers);
-app.get('/api/v1/users/:id', service.getUserById);
-app.post('/api/v1/users', service.register);
-app.put('/api/v1/users/:id', service.updateUser);
-app.delete('/api/v1/users/:id', service.deleteUser);
-app.get('/api/v1/clearRecords', service.removeOldNonReadyRecords);
+// TODO: Add intercepter to validate token en each API calls.
+
+// User related APIs.
+app.get('/api/v1/users', userService.getAllUsers);
+app.get('/api/v1/users/:id', userService.getUserById);
+app.post('/api/v1/users', userService.register);
+app.put('/api/v1/users/:id', userService.updateUser);
+app.delete('/api/v1/users/:id', userService.deleteUser);
+app.get('/api/v1/clearRecords', userService.removeOldNonReadyRecords);
+
+// Expense data related APIs.
+app.get('/api/v1/expenses/:userId/sync/begin', expenseService.syncInit);
+app.post('/api/v1/expenses/:userId/sync/:id', expenseService.syncUpdate);
+app.post('/api/v1/expenses/:userId/sync/:id/finish', expenseService.syncFinish);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);
