@@ -15,3 +15,21 @@ create table auth(
     auth_token varchar(100),
     token_expiry_time timestamp
 );
+
+create table metadata(
+    id serial PRIMARY KEY,
+    user_id integer REFERENCES users(user_id) ON DELETE CASCADE,
+    status varchar(15) DEFAULT 'INIT',
+    create_time timestamp DEFAULT CURRENT_TIMESTAMP,
+    update_time timestamp
+);
+
+create table user_expense_data(
+    metadata_id integer REFERENCES metadata(id) ON DELETE CASCADE,
+    id integer,
+    title varchar(50),
+    amount real,
+    category varchar(15),
+    description varchar(100),
+    entryDate timestamp
+);
