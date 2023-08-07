@@ -67,21 +67,10 @@ const deleteUser = (request, response) => {
     });
 }
 
-const removeOldNonReadyRecords = (request, response) => {
-    console.log('Clear records.');
-    db.deleteNonReadyRecords().then((result) => {
-        util.successResponse({ status: result }, response);
-    }).catch((error) => {
-        console.log('Error while deleting non ready user.', error);
-        util.failureResponse(err.ERR_007, response);
-    });
-}
-
 module.exports = {
     register,
     getAllUsers,
     getUserById,
     updateUser,
     deleteUser,
-    removeOldNonReadyRecords,
 }

@@ -7,6 +7,7 @@ dotenv.config();
 // Services
 const userService = require('./services/user-service');
 const expenseService = require('./services/expense-service');
+const houseKeepingService = require('./services/house-keeping-service');
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -30,7 +31,9 @@ app.get('/api/v1/users/:id', userService.getUserById);
 app.post('/api/v1/users', userService.register);
 app.put('/api/v1/users/:id', userService.updateUser);
 app.delete('/api/v1/users/:id', userService.deleteUser);
-app.get('/api/v1/clearRecords', userService.removeOldNonReadyRecords);
+
+// House keeping service
+app.get('/api/v1/clearRecords', houseKeepingService.removeOldNonReadyRecords);
 
 // Expense data related APIs.
 app.get('/api/v1/expenses/:userId/sync/begin', expenseService.syncInit);

@@ -1,3 +1,4 @@
+const sql = require('sql');
 const Pool = require('pg').Pool
 const dbUserName = process.env.DB_USER_NAME || '*****';
 const dbPassword = process.env.DB_PASSWORD || '******';
@@ -7,6 +8,66 @@ const pool = new Pool({
         rejectUnauthorized: false,
     },
 });
+
+let Expense = sql.define({
+    name: 'user_expense_data',
+    columns: [
+        'metadata_id',
+        'id',
+        'title',
+        'amount',
+        'category',
+        'description',
+        'entry_date'
+    ]
+});
+
+const insertExpenses = (expenses, metadataId) => {
+    let records = expenses.map(expense => {
+        let dbEntry = {};
+        dbEntry.metadata_id = metadataId;
+        dbEntry.id = expense.id;
+        dbEntry.title = expense.title;
+        dbEntry.amount = expense.amount;
+        dbEntry.category = expense.category;
+        dbEntry.description = expense.description;
+        dbEntry.entry_date = expense.entry_date;
+        return dbEntry;
+    });
+    console.log('DB records to insert:', records);
+    let query = Expense.insert(records).returning(Expense.id).toQuery();
+    return new Promise((resolve, reject) => {
+        pool.query(query, (error, results) => {
+            if (error) {
+                //throw error
+                reject(error);
+            } else {
+                //response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
+                resolve(results);
+            }
+        });
+    });
+}
+
+const updateMetaData = (userId, metadataId, status) => {
+    console.log(`Metadata update request received for userId: ${userId}, metadataId: ${metadataId}, status: ${status}`);
+
+    return new Promise((resolve, reject) => {
+        pool.query(
+            'UPDATE metadata SET status = $1, update_time = CURRENT_TIMESTAMP WHERE id = $2 and user_id = $3',
+            [status, metadataId, userId],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    //console.log('metadata update result object:', results);
+                    resolve(results.rowCount);
+                }
+            }
+        );
+    });
+
+}
 
 const createUser = (name, password, email) => {
     console.log('Create user request received for username:', name);
@@ -80,10 +141,26 @@ const deleteUser = (id) => {
     });
 }
 
-const deleteNonReadyRecords = () => {
+const deleteNonReadyUserRecords = () => {
     console.log('Deleting older non-ready user records');
     return new Promise((resolve, reject) => {
         pool.query("DELETE FROM users USING auth WHERE users.user_id = auth.user_id and create_time < NOW() - INTERVAL '1 day' and status = 'INIT' ",
+            [],
+            (error, results) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve('DONE');
+                }
+            }
+        );
+    });
+}
+
+const deleteNonReadyMetadata = () => {
+    console.log('Deleting older non-ready metadata records');
+    return new Promise((resolve, reject) => {
+        pool.query("DELETE FROM metadata where create_time < NOW() - INTERVAL '1 day' and status = 'INIT' ",
             [],
             (error, results) => {
                 if (error) {
@@ -134,7 +211,10 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
-    deleteNonReadyRecords,
+    deleteNonReadyUserRecords,
     createAuthRecord,
-    createMetaData
+    createMetaData,
+    insertExpenses,
+    updateMetaData,
+    deleteNonReadyMetadata,
 }

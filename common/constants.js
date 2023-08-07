@@ -7,4 +7,6 @@ module.exports = Object.freeze({
     ERR_006: { errorCode: 'E006', errorMessage: 'Error deleting user.'},
     ERR_007: { errorCode: 'E007', errorMessage: 'Error deleting old non ready user records.'},
     ERR_008: { errorCode: 'E008', errorMessage: 'Error while creating auth record.'},
+    ERR_009: { errorCode: 'E009', errorMessage: 'Error while sync update.'},
+    ERR_010: { errorCode: 'E010', errorMessage: 'Error while sync finish.'},
 });

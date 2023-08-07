@@ -31,5 +31,5 @@ create table user_expense_data(
     amount real,
     category varchar(15),
     description varchar(100),
-    entryDate timestamp
+    entry_date bigint
 );
