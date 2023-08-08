@@ -39,6 +39,7 @@ app.get('/api/v1/clearRecords', houseKeepingService.removeOldNonReadyRecords);
 app.get('/api/v1/expenses/:userId/sync/begin', expenseService.syncInit);
 app.post('/api/v1/expenses/:userId/sync/:id', expenseService.syncUpdate);
 app.post('/api/v1/expenses/:userId/sync/:id/finish', expenseService.syncFinish);
+app.get('/api/v1/expenses/:userId/restore/begin', expenseService.restoreInit);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);

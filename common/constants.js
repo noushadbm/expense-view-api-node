@@ -9,4 +9,5 @@ module.exports = Object.freeze({
     ERR_008: { errorCode: 'E008', errorMessage: 'Error while creating auth record.'},
     ERR_009: { errorCode: 'E009', errorMessage: 'Error while sync update.'},
     ERR_010: { errorCode: 'E010', errorMessage: 'Error while sync finish.'},
+    ERR_011: { errorCode: 'E011', errorMessage: 'Error while restore initialization.'},
 });

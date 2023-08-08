@@ -47,10 +47,24 @@ const syncFinish = (request, response) => {
         });
 }
 
+const restoreInit = (request, response) => {
+    const userId = parseInt(request.params.userId);
+    db.getMetadataIdForUser(userId)
+        .then(metadataId => {
+            return db.getTotalMetadataCount(userId, metadataId);
+        }).then(details => {
+            util.successResponse({ metadataId: details.metadataId, totalCount: details.count }, response);
+        }).catch(error => {
+            console.log('Error while restore initialization.', error);
+            util.failureResponse(err.ERR_011, response);
+        });
+}
+
 module.exports = {
     syncInit,
     syncUpdate,
     syncFinish,
+    restoreInit,
 }
 
 const ifUserExists = () => {

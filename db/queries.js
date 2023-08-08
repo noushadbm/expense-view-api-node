@@ -205,6 +205,36 @@ const createMetaData = (userId) => {
     });
 }
 
+const getMetadataIdForUser = (userId) => {
+    console.log('Getting latest metadata id for user:', userId);
+    return new Promise((resolve, reject) => {
+        pool.query("SELECT * from metadata WHERE user_id = $1 AND STATUS = 'FINISHED' ORDER BY id DESC", [userId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                if (results.rows.length < 1) {
+                    reject('No Data found.');
+                } else {
+                    resolve(results.rows[0].id);
+                }
+            }
+        });
+    });
+}
+
+const getTotalMetadataCount = (userId, metadataId) => {
+    console.log(`Getting metadata count for userId: ${userId}, metadataId: ${metadataId}`);
+    return new Promise((resolve, reject) => {
+        pool.query("SELECT count(*) as count from metadata where user_id = $1 and id = $2", [userId, metadataId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve({ count: results.rows[0].count, metadataId: metadataId });
+            }
+        });
+    });
+}
+
 module.exports = {
     getUsers,
     getUserById,
@@ -217,4 +247,6 @@ module.exports = {
     insertExpenses,
     updateMetaData,
     deleteNonReadyMetadata,
+    getMetadataIdForUser,
+    getTotalMetadataCount,
 }
