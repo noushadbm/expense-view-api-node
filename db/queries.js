@@ -225,7 +225,7 @@ const getMetadataIdForUser = (userId) => {
 const getTotalMetadataCount = (userId, metadataId) => {
     console.log(`Getting metadata count for userId: ${userId}, metadataId: ${metadataId}`);
     return new Promise((resolve, reject) => {
-        pool.query("SELECT count(*) as count from metadata where user_id = $1 and id = $2", [userId, metadataId], (error, results) => {
+        pool.query("SELECT count(*) as count from user_expense_data where metadata_id = $1", [metadataId], (error, results) => {
             if (error) {
                 reject(error);
             } else {
