@@ -1,10 +1,12 @@
 const db = require('../db/queries');
 const util = require('../utils/util');
+const passwordUtil = require('../utils/password-util');
 const err = require('../common/constants');
 
 const register = (request, response) => {
     const { name, password, email } = request.body;
-    db.createUser(name, password, email).then(userId => {
+    let passwordHash = passwordUtil.encrypt(password);
+    db.createUser(name, passwordHash, email).then(userId => {
         console.log('User created with id:', userId);
         let verificationCode = util.getRandomNumber();
         db.createAuthRecord(userId, verificationCode).then((status) => {

@@ -127,6 +127,21 @@ const getUserById = (id) => {
     });
 }
 
+const getUserByName = (name) => {
+    console.log('Request received for getting user by name:', name);
+
+    return new Promise((resolve, reject) => {
+        pool.query('SELECT * FROM users WHERE user_name = $1', [name], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                // response.status(200).json(results.rows)
+                resolve(results.rows);
+            }
+        })
+    });
+}
+
 const deleteUser = (id) => {
     console.log('Request received for deleting user:', id);
     return new Promise((resolve, reject) => {
@@ -238,6 +253,7 @@ const getTotalMetadataCount = (userId, metadataId) => {
 module.exports = {
     getUsers,
     getUserById,
+    getUserByName,
     createUser,
     updateUser,
     deleteUser,

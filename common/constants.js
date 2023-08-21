@@ -10,4 +10,6 @@ module.exports = Object.freeze({
     ERR_009: { errorCode: 'E009', errorMessage: 'Error while sync update.'},
     ERR_010: { errorCode: 'E010', errorMessage: 'Error while sync finish.'},
     ERR_011: { errorCode: 'E011', errorMessage: 'Error while restore initialization.'},
+    ERR_012: { errorCode: 'E012', errorMessage: 'Error while validating password.'},
+    ERR_013: { errorCode: 'E013', errorMessage: 'Username or password does not match.'},
 });

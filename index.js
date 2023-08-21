@@ -7,6 +7,7 @@ dotenv.config();
 // Services
 const userService = require('./services/user-service');
 const expenseService = require('./services/expense-service');
+const authService = require('./services/auth-service');
 const houseKeepingService = require('./services/house-keeping-service');
 
 const app = express();
@@ -40,6 +41,8 @@ app.get('/api/v1/expenses/:userId/sync/begin', expenseService.syncInit);
 app.post('/api/v1/expenses/:userId/sync/:id', expenseService.syncUpdate);
 app.post('/api/v1/expenses/:userId/sync/:id/finish', expenseService.syncFinish);
 app.get('/api/v1/expenses/:userId/restore/begin', expenseService.restoreInit);
+
+app.post('/api/v1/authenticate', authService.login);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);
