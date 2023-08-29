@@ -43,6 +43,7 @@ app.post('/api/v1/expenses/:userId/sync/:id/finish', expenseService.syncFinish);
 app.get('/api/v1/expenses/:userId/restore/begin', expenseService.restoreInit);
 
 app.post('/api/v1/authenticate', authService.login);
+app.post('/api/v1/logout', authService.logout);
 
 app.listen(port, () => {
     console.log(`App running on port ${port}.`);

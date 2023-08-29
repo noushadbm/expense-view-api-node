@@ -12,7 +12,7 @@ create table users(
 create table auth(
     user_id integer REFERENCES users(user_id) ON DELETE CASCADE,
     verification_code varchar(50),
-    auth_token varchar(100),
+    auth_token varchar(500),
     token_expiry_time timestamp
 );
 

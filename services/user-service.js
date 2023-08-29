@@ -26,7 +26,15 @@ const getAllUsers = (request, response) => {
     db.getUsers()
         .then((allUsers) => {
             //response.status(200).json(allUsers);
-            util.successResponse({ users: allUsers }, response);
+            let filteredList = allUsers.map(user => {
+                return {
+                    user_id: user.user_id,
+                    user_name: user.user_name,
+                    email: user.email,
+                    status: user.status,
+                }
+            });
+            util.successResponse({ users: filteredList }, response);
         }).catch(error => {
             console.log('Error while getting all users', error);
             util.failureResponse(err.ERR_003, response);

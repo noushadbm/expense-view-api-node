@@ -16,18 +16,43 @@ const login = (request, response) => {
         return passwordUtil.isCorrectPassword(password, hashedPwd);
     }).then((isCorrectPwd) => {
         if (isCorrectPwd) {
-            util.successResponse({ status: 'success', token: passwordUtil.generateJwt({username}) }, response);
+            let expiry = passwordUtil.getTokenExpiry();
+            let token = passwordUtil.generateJwt({ username }, expiry);
+            db.updateAuthByName(username, token, expiry).then(() => {
+                util.successResponse({ status: 'success', token, userName: username, expiry }, response);
+            }).catch((error) => {
+                throw error;
+            });
         } else {
             console.log('Username or password does not match.');
             util.authFailureResponse(err.ERR_013, response);
         }
-
     }).catch(error => {
         console.log(`Error while authenticating user: ${username}.`, error);
         util.authFailureResponse(err.ERR_012, response);
     });
 }
 
+const logout = (request, response) => {
+    let bearerHeader = request.headers['authorization'];
+    if (bearerHeader) {
+        let token = bearerHeader.replace('Bearer ', '');
+        passwordUtil.verifyJwt(token).then((parsedJwt) => {
+            let username = parsedJwt.body.username;
+            return db.resetAuthByName(username);
+        }).then(() => {
+            util.successResponse({ status: 'success' }, response);
+        }).catch((error) => {
+            console.log('Error:', error)
+            util.failureResponse(err.ERR_014, response);
+        });
+    } else {
+        console.log('Error');
+        util.authFailureResponse(err.ERR_012, response);
+    }
+}
+
 module.exports = {
     login,
+    logout,
 }

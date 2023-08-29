@@ -10,19 +10,24 @@ const isCorrectPassword = (password, hashedPassword) => {
     return bcrypt.compareSync(password, hashedPassword);
 }
 
-const generateJwt = (claims) => {
+const generateJwt = (claims, expiry) => {
     const token = jwt.create(claims, 'top-secret-phrase');
-    token.setExpiration(new Date().getTime() + 60*1000);
+    token.setExpiration(expiry); // one hour from now.
     return token.compact();
+}
+
+const getTokenExpiry = () => {
+    return new Date().getTime() + (60*60*1000); // one hour from now.
 }
 
 const verifyJwt = (token) => {
     return new Promise((resolve, reject) => {
         jwt.verify(token, 'top-secret-phrase', (err, verifiedJwt) => {
             if(err){
-                resolve(verifiedJwt);
-            }else{
+                console.log('Error: ', err);
                 reject('Failed.');
+            }else{
+                resolve(verifiedJwt); 
             }
           })
     });
@@ -33,4 +38,5 @@ module.exports = {
     isCorrectPassword,
     generateJwt,
     verifyJwt,
+    getTokenExpiry,
 }

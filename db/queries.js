@@ -127,6 +127,32 @@ const getUserById = (id) => {
     });
 }
 
+const updateAuthByName = (username, token, expiry) => {
+    // expiry is in epoc time
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE auth AS auth SET auth_token = $1, token_expiry_time = to_timestamp($2) FROM users as users WHERE auth.user_id = users.user_id AND users.user_name = $3', [token, expiry, username], (error, results) => {
+            if(error) {
+                reject(error);
+            } else {
+                resolve('DONE');
+            }
+        });
+    });
+}
+
+const resetAuthByName = (username) => {
+    return new Promise((resolve, reject) => {
+        pool.query('UPDATE auth AS auth SET auth_token = null, token_expiry_time = null FROM users as users WHERE auth.user_id = users.user_id AND users.user_name = $1', [username], (error, results) => {
+            if(error) {
+                reject(error);
+            } else {
+                resolve('DONE');
+            }
+
+        });
+    });
+}
+
 const getUserByName = (name) => {
     console.log('Request received for getting user by name:', name);
 
@@ -265,4 +291,6 @@ module.exports = {
     deleteNonReadyMetadata,
     getMetadataIdForUser,
     getTotalMetadataCount,
+    updateAuthByName,
+    resetAuthByName,
 }
