@@ -5,6 +5,7 @@ const err = require('../common/constants');
 
 const login = (request, response) => {
     const { username, password } = request.body;
+    console.log('Login request received for user:', username);
     db.getUserByName(username).then((users) => {
         if (users.length) {
             return users[0];
@@ -34,6 +35,7 @@ const login = (request, response) => {
 }
 
 const logout = (request, response) => {
+    console.log('Logout request received.');
     let bearerHeader = request.headers['authorization'];
     if (bearerHeader) {
         let token = bearerHeader.replace('Bearer ', '');
@@ -48,7 +50,7 @@ const logout = (request, response) => {
         });
     } else {
         console.log('Error');
-        util.authFailureResponse(err.ERR_012, response);
+        util.authFailureResponse(err.ERR_015, response);
     }
 }
 

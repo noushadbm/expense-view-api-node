@@ -13,4 +13,5 @@ module.exports = Object.freeze({
     ERR_012: { errorCode: 'E012', errorMessage: 'Error while validating password.'},
     ERR_013: { errorCode: 'E013', errorMessage: 'Username or password does not match.'},
     ERR_014: { errorCode: 'E014', errorMessage: 'Failed to decode jwt.'},
+    ERR_015: { errorCode: 'E015', errorMessage: 'Authorization header not found'},
 });
