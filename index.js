@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 // To read environment variables from .env file.
 dotenv.config();
 
+// Middlewares
+const middlewares = require('./middleware/tokenCheck');
+
 // Services
 const userService = require('./services/user-service');
 const expenseService = require('./services/expense-service');
@@ -30,17 +33,17 @@ app.get('/', (request, response) => {
 app.get('/api/v1/users', userService.getAllUsers);
 app.get('/api/v1/users/:id', userService.getUserById);
 app.post('/api/v1/users', userService.register);
-app.put('/api/v1/users/:id', userService.updateUser);
-app.delete('/api/v1/users/:id', userService.deleteUser);
+app.put('/api/v1/users/:id', middlewares.checkToken, userService.updateUser);
+app.delete('/api/v1/users/:id', middlewares.checkToken, userService.deleteUser);
 
 // House keeping service
 app.get('/api/v1/clearRecords', houseKeepingService.removeOldNonReadyRecords);
 
 // Expense data related APIs.
-app.get('/api/v1/expenses/:userId/sync/begin', expenseService.syncInit);
-app.post('/api/v1/expenses/:userId/sync/:id', expenseService.syncUpdate);
-app.post('/api/v1/expenses/:userId/sync/:id/finish', expenseService.syncFinish);
-app.get('/api/v1/expenses/:userId/restore/begin', expenseService.restoreInit);
+app.get('/api/v1/expenses/:userId/sync/begin', middlewares.checkToken, expenseService.syncInit);
+app.post('/api/v1/expenses/:userId/sync/:id', middlewares.checkToken, expenseService.syncUpdate);
+app.post('/api/v1/expenses/:userId/sync/:id/finish', middlewares.checkToken, expenseService.syncFinish);
+app.get('/api/v1/expenses/:userId/restore/begin', middlewares.checkToken, expenseService.restoreInit);
 
 app.post('/api/v1/authenticate', authService.login);
 app.post('/api/v1/logout', authService.logout);

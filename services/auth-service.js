@@ -14,13 +14,21 @@ const login = (request, response) => {
         }
     }).then((user) => {
         let hashedPwd = user.user_password;
-        return passwordUtil.isCorrectPassword(password, hashedPwd);
-    }).then((isCorrectPwd) => {
-        if (isCorrectPwd) {
+        let isCorrectPass = passwordUtil.isCorrectPassword(password, hashedPwd);
+        const res = {};
+        if (isCorrectPass) {
+            res.correctPass = true;
+            res.userId = user.user_id;
+        } else {
+            res.correctPass = false;
+        }
+        return res;
+    }).then((result) => {
+        if (result.correctPass) {
             let expiry = passwordUtil.getTokenExpiry();
             let token = passwordUtil.generateJwt({ username }, expiry);
             db.updateAuthByName(username, token, expiry).then(() => {
-                util.successResponse({ status: 'success', token, userName: username, expiry }, response);
+                util.successResponse({ status: 'success', token, userName: username, userId: result.userId, expiry }, response);
             }).catch((error) => {
                 throw error;
             });

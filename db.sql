@@ -2,7 +2,7 @@ create table users(
     user_id serial PRIMARY KEY,
     user_name varchar(50) not null,
     user_password varchar(100) not null,
-    user_role varchar(25),
+    user_role varchar(25) DEFAULT 'USER',
     email varchar(50),
     status varchar(15) DEFAULT 'INIT',
     create_time timestamp DEFAULT CURRENT_TIMESTAMP,
@@ -31,5 +31,6 @@ create table user_expense_data(
     amount real,
     category varchar(15),
     description varchar(100),
-    entry_date bigint
+    entry_date bigint,
+    PRIMARY KEY (metadata_id, id)
 );

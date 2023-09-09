@@ -28,7 +28,6 @@ const getAllUsers = (request, response) => {
             //response.status(200).json(allUsers);
             let filteredList = allUsers.map(user => {
                 return {
-                    user_id: user.user_id,
                     user_name: user.user_name,
                     email: user.email,
                     status: user.status,
@@ -45,7 +44,11 @@ const getUserById = (request, response) => {
     const id = parseInt(request.params.id)
     db.getUserById(id).then((users) => {
         if (users.length) {
-            util.successResponse({ user: users[0] }, response);
+            let data = {};
+            data.user_name = users[0].user_name;
+            data.email = users[0].email;
+            data.status = users[0].status;
+            util.successResponse({ user: data }, response);
         } else {
             util.failureResponse(err.ERR_002, response);
         }

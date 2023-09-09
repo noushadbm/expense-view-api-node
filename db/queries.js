@@ -276,6 +276,19 @@ const getTotalMetadataCount = (userId, metadataId) => {
     });
 }
 
+const getMetaMasterById = (userId, metadataId) => {
+    console.log(`Getting metadata for userId: ${userId}, metadataId: ${metadataId}`);
+    return new Promise((resolve, reject) => {
+        pool.query("SELECT * from metadata where id = $1 and user_id = $2", [metadataId, userId], (error, results) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(results.rows);
+            }
+        });
+    });
+}
+
 module.exports = {
     getUsers,
     getUserById,
@@ -290,6 +303,7 @@ module.exports = {
     updateMetaData,
     deleteNonReadyMetadata,
     getMetadataIdForUser,
+    getMetaMasterById,
     getTotalMetadataCount,
     updateAuthByName,
     resetAuthByName,
