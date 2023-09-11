@@ -22,7 +22,7 @@ const checkToken = (req, res, next) => {
             next();
         }).catch((error) => {
             console.log('Middleware error:', error)
-            util.failureResponse(err.ERR_014, res);
+            util.authFailureResponse(err.ERR_014, res);
         });
     } else {
         console.log('Middleware error: No bearer token.')

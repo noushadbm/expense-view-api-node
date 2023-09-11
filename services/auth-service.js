@@ -54,7 +54,7 @@ const logout = (request, response) => {
             util.successResponse({ status: 'success' }, response);
         }).catch((error) => {
             console.log('Error:', error)
-            util.failureResponse(err.ERR_014, response);
+            util.authFailureResponse(err.ERR_014, response);
         });
     } else {
         console.log('Error');
