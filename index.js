@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const dotenv = require('dotenv');
+const path = require('path');
 // To read environment variables from .env file.
 dotenv.config();
 
@@ -16,6 +17,8 @@ const houseKeepingService = require('./services/house-keeping-service');
 const app = express();
 const port = process.env.PORT || 3000;
 
+// Set static file folder.
+app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(
     bodyParser.urlencoded({
@@ -23,8 +26,19 @@ app.use(
     })
 );
 
-app.get('/', (request, response) => {
-    response.json({ info: 'Hello from expense-view API' });
+app.use('/', function (req, res, next) {
+    const options = {
+        root: path.join(__dirname, 'public')
+    };
+    const fileName = 'index.html';
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            next(err);
+        } else {
+            console.log('Sent:', fileName);
+            next();
+        }
+    });
 });
 
 // TODO: Add intercepter to validate token en each API calls.
