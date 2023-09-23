@@ -34,3 +34,9 @@ create table user_expense_data(
     entry_date bigint,
     PRIMARY KEY (metadata_id, id)
 );
+
+create table user_request_log(
+    request_time timestamp DEFAULT CURRENT_TIMESTAMP,
+    remote_ip varchar(150),
+    remote_ua varchar(250)
+);

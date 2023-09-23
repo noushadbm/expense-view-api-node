@@ -289,6 +289,21 @@ const getMetaMasterById = (userId, metadataId) => {
     });
 }
 
+const addUserAccessLog = (remoteIp, remoteUA) => {
+    console.log('Adding access log entry for remote-ip', remoteIp, ', UserAgent:', remoteUA);
+    return new Promise((resolve, reject) => {
+        pool.query('INSERT INTO user_request_log (remote_ip, remote_ua) VALUES ($1, $2) RETURNING *', [remoteIp, remoteUA], (error, results) => {
+            if (error) {
+                //throw error
+                reject(error);
+            } else {
+                //response.status(201).send(`User added with ID: ${results.rows[0].user_id}`)
+                resolve(results.rows[0]);
+            }
+        });
+    });
+}
+
 module.exports = {
     getUsers,
     getUserById,
@@ -307,4 +322,5 @@ module.exports = {
     getTotalMetadataCount,
     updateAuthByName,
     resetAuthByName,
+    addUserAccessLog,
 }

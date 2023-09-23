@@ -28,22 +28,28 @@ app.use(
 );
 
 app.use("/", function (req, res, next) {
-  var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  var userAgent = req.headers['user-agent'];
-  console.log('ip: >>', ip);
-  console.log('userAgent: >>', userAgent);
   const options = {
     root: path.join(__dirname, "public"),
   };
   const fileName = "index.html";
-  res.sendFile(fileName, options, function (err) {
-    if (err) {
-      next(err);
-    } else {
-      console.log("Sent:", fileName);
-      next();
-    }
-  });
+
+  // Inser access log and then serve the index.html
+  houseKeepingService
+    .addUserAccessLog(req)
+    .then((result) => {
+      console.log("Return index.html");
+      res.sendFile(fileName, options, function (err) {
+        if (err) {
+          next(err);
+        } else {
+          console.log("Sent:", fileName);
+          next();
+        }
+      });
+    })
+    .catch((error) => {
+      console.log("Failed with error:", error);
+    });
 });
 
 // TODO: Add intercepter to validate token en each API calls.
