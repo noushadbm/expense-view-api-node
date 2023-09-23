@@ -29,7 +29,9 @@ app.use(
 
 app.use("/", function (req, res, next) {
   var ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  var userAgent = req.headers['user-agent'];
   console.log('ip: >>', ip);
+  console.log('userAgent: >>', userAgent);
   const options = {
     root: path.join(__dirname, "public"),
   };
