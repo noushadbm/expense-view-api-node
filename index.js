@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const path = require("path");
-const fetch = require("node-fetch");
+const nocache = require('nocache');
 // To read environment variables from .env file.
 dotenv.config();
 
@@ -27,23 +27,30 @@ app.use(
   })
 );
 
-app.use("/", function (req, res, next) {
-  const options = {
-    root: path.join(__dirname, "public"),
-  };
-  const fileName = "index.html";
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Expires', '0');
+  next();
+});
+
+app.use("/", function (req, res) {
+  //const fileName = "index.html";
 
   // Inser access log and then serve the index.html
   houseKeepingService
     .addUserAccessLog(req)
     .then((result) => {
       console.log("Return index.html");
-      res.sendFile(fileName, options, function (err) {
+      //res.header('Last-Modified', (new Date()).toUTCString());
+      const headers = {'Expires': 0, 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Last-Modified': (new Date()).toUTCString()};
+      //res.sendFile(path.resolve('public/index.html'), { headers: hdrs, lastModified: false, etag: false });
+
+      res.sendFile(path.resolve('public/index.html'), { headers }, (err) => {
         if (err) {
-          next(err);
+          console.error(`Error sending file: ${err}`);
+          res.status(err.status || 500).end();
         } else {
-          console.log("Sent:", fileName);
-          next();
+          console.log('File sent successfully');
         }
       });
     })
