@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
-const path = require("path");
-const nocache = require('nocache');
+//const path = require("path");
+//const nocache = require('nocache');
 // To read environment variables from .env file.
 dotenv.config();
 
@@ -19,7 +19,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Set static file folder.
-app.use(express.static("public"));
+//app.use(express.static("public"));
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({
@@ -33,31 +33,35 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", function (req, res) {
-  //const fileName = "index.html";
-
-  // Inser access log and then serve the index.html
-  houseKeepingService
-    .addUserAccessLog(req)
-    .then((result) => {
-      console.log("Return index.html");
-      //res.header('Last-Modified', (new Date()).toUTCString());
-      const headers = {'Expires': 0, 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Last-Modified': (new Date()).toUTCString()};
-      //res.sendFile(path.resolve('public/index.html'), { headers: hdrs, lastModified: false, etag: false });
-
-      res.sendFile(path.resolve('public/index.html'), { headers }, (err) => {
-        if (err) {
-          console.error(`Error sending file: ${err}`);
-          res.status(err.status || 500).end();
-        } else {
-          console.log('File sent successfully');
-        }
-      });
-    })
-    .catch((error) => {
-      console.log("Failed with error:", error);
-    });
+app.get('/', (request, response) => {
+  response.json({ info: 'Hello from expense-view API' });
 });
+
+// app.use("/", function (req, res) {
+//   //const fileName = "index.html";
+
+//   // Inser access log and then serve the index.html
+//   houseKeepingService
+//     .addUserAccessLog(req)
+//     .then((result) => {
+//       console.log("Return index.html");
+//       //res.header('Last-Modified', (new Date()).toUTCString());
+//       const headers = {'Expires': 0, 'Pragma': 'no-cache', 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Last-Modified': (new Date()).toUTCString()};
+//       //res.sendFile(path.resolve('public/index.html'), { headers: hdrs, lastModified: false, etag: false });
+
+//       res.sendFile(path.resolve('public/index.html'), { headers }, (err) => {
+//         if (err) {
+//           console.error(`Error sending file: ${err}`);
+//           res.status(err.status || 500).end();
+//         } else {
+//           console.log('File sent successfully');
+//         }
+//       });
+//     })
+//     .catch((error) => {
+//       console.log("Failed with error:", error);
+//     });
+// });
 
 // TODO: Add intercepter to validate token en each API calls.
 
