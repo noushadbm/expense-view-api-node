@@ -40,3 +40,5 @@ create table user_request_log(
     remote_ip varchar(150),
     remote_ua varchar(250)
 );
+
+ALTER TABLE user_expense_data ALTER COLUMN description TYPE VARCHAR(500);
